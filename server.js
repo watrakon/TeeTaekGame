@@ -251,27 +251,33 @@ io.on('connection', (socket) => {
     });
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, async () => {
-    console.log(`\nLocal Server is setting up...`);
-    try {
-        const tunnel = await localtunnel({ port: PORT });
-        console.log(`\n\n======================================================`);
-        console.log(`  🎉 สร้างห้องเจาะทะลุจังหวัดสำเร็จแล้ว! `);
-        console.log(`  ✨ ก๊อปลิ้งก์ตัวแดงๆ ด้านล่างนี้ส่งให้แฟนกดเข้าได้เลย:`);
-        console.log(`\n  👉  ${tunnel.url}  👈\n`);
-        console.log(`  (ปล. เวลาเข้าเว็บครั้งแรก อาจจะต้องกดปุ่ม 'Click to Continue' 1 ทีนะครับ)`);
-        console.log(`======================================================\n\n`);
-        
-        tunnel.on('close', () => {
-             console.log('Tunnel Closed');
-        });
-        
-        tunnel.on('error', (err) => {
-             console.log('⚠️ Tunnel Connection Error (ระบบอุโมงค์สะดุดชั่วคราว):', err.message);
-             console.log('ไม่ต้องตกใจ เซิร์ฟเวอร์ยังทำงานต่อได้ครับ! ถ้าค้างให้ลองรัน npm start ใหม่');
-        });
-    } catch (err) {
-        console.log("Error creating tunnel: ", err);
+    console.log(`\nServer is running on port ${PORT}`);
+    
+    // Only start localtunnel if not running on a cloud platform (like Render)
+    if (!process.env.RENDER) {
+        console.log(`Local Server is setting up tunneling...`);
+        try {
+            const tunnel = await localtunnel({ port: PORT });
+            console.log(`\n\n======================================================`);
+            console.log(`  🎉 สร้างห้องเจาะทะลุจังหวัดสำเร็จแล้ว! `);
+            console.log(`  ✨ ก๊อปลิ้งก์ตัวแดงๆ ด้านล่างนี้ส่งให้แฟนกดเข้าได้เลย:`);
+            console.log(`\n  👉  ${tunnel.url}  👈\n`);
+            console.log(`  (ปล. เวลาเข้าเว็บครั้งแรก อาจจะต้องกดปุ่ม 'Click to Continue' 1 ทีนะครับ)`);
+            console.log(`======================================================\n\n`);
+            
+            tunnel.on('close', () => {
+                 console.log('Tunnel Closed');
+            });
+            
+            tunnel.on('error', (err) => {
+                 console.log('⚠️ Tunnel Connection Error:', err.message);
+            });
+        } catch (err) {
+            console.log("Error creating tunnel: ", err);
+        }
+    } else {
+        console.log("Cloud deployment detected. Tunneling disabled.");
     }
 });
