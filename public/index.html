@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ตีแตก (Tee Taek)</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="shuffle-overlay" class="shuffle-overlay"></div>
+
+    <div id="login-screen" class="screen active">
+        <div class="glass-panel">
+            <h1>🃏 ไพ่ตีแตก</h1>
+            <p style="color: #9ca3af; margin-bottom: 20px;">เกมไพ่วัดใจสุดโรแมนติก</p>
+            <input type="text" id="username" placeholder="พิมพ์ชื่อของคุณ..." maxlength="10">
+            <button id="btn-join" class="btn-glow">เข้าเล่นโต๊ะนี้</button>
+        </div>
+    </div>
+
+    <div id="game-screen" class="screen">
+        <!-- Opponent Area -->
+        <div class="opponent-area">
+            <div class="user-info">
+                <span id="opp-name" style="color:#aaa;">รอผู้เล่น...</span>
+                <span class="chips pulse-glow" id="opp-chips">💰 0</span>
+            </div>
+            <div class="cards-hidden" id="opp-hands">
+                <!-- rendered opponents card backs -->
+            </div>
+        </div>
+
+        <!-- Center Area -->
+        <div class="center-area">
+            <div class="pot-display">
+                <div class="pot-glow"></div>
+                กองกลาง: <span id="pot-amount">0</span>
+            </div>
+            <div class="center-card-slot" id="center-slot">
+                <!-- Center card will appear here -->
+            </div>
+            <div id="system-msg" class="msg-box">รอเพื่อนร่วมโต๊ะชั่วครู่...</div>
+        </div>
+
+        <!-- Player Area -->
+        <div class="player-area">
+            <div class="user-info">
+                <span id="my-name" style="color:white; font-size: 1.4rem;">ตัวฉัน</span>
+                <span class="chips pulse-glow" id="my-chips">💰 0</span>
+            </div>
+            
+            <div class="action-panel" id="action-panel" style="display: none;">
+                <div class="bet-slider">
+                    <label>ลงเงินสู้: <span id="bet-value" style="color: #ff3366; font-size:1.5rem; font-weight:bold;">0</span></label>
+                    <input type="range" id="bet-range" min="1" max="100" value="1">
+                </div>
+                <div class="btn-group">
+                    <button id="btn-fight" class="btn-action bg-red">🔥 ตีแตก (สู้!)</button>
+                    <button id="btn-pass" class="btn-action bg-gray">💤 หมอบ</button>
+                </div>
+            </div>
+
+            <div class="my-cards" id="my-hands">
+                <!-- rendered my cards -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Result -->
+    <div id="result-modal" class="modal">
+        <div class="modal-content glass-panel" style="width: 90%;">
+            <h2 id="result-title" style="font-size: 2rem;">ผลการดวล!</h2>
+            <div class="result-cards">
+                <div class="result-card-wrap">
+                    <small style="color: #ccc;">ไพ่กองกลาง</small>
+                    <div id="res-center-card"></div>
+                </div>
+                <h2 style="color: white; margin: 0 10px;">VS</h2>
+                <div class="result-card-wrap">
+                    <small id="res-player-name" style="color: #ff3366; font-weight:bold;">ผู้เล่น</small>
+                    <div id="res-player-card"></div>
+                </div>
+            </div>
+            <p id="result-desc" style="font-size: 1.2rem; color: #fff;"></p>
+        </div>
+    </div>
+    
+    <!-- Modal for GAME OVER -->
+    <div id="gameover-modal" class="modal">
+        <div class="modal-content glass-panel" style="width: 90%;">
+            <h1 style="color: #ef4444; font-size: 2.5rem; text-shadow: 0 0 10px red;">💥 ล้มละลาย!</h1>
+            <p id="bankrupt-msg" style="font-size: 1.2rem; margin-bottom: 20px;"></p>
+            <div class="punishment-box">
+                <h3 style="margin:0; color:#fff;">สุ่มบทลงโทษผู้แพ้</h3>
+                <h2 id="punishment-text" class="text-glow" style="margin-top: 10px;"></h2>
+            </div>
+            <button onclick="location.reload()" style="margin-top:20px; padding:10px 20px; border-radius:10px; border:none; background:#4b5563; color:white; font-size:1.1rem; cursor:pointer;">เล่นใหม่อีกรอบ</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
